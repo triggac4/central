@@ -10,7 +10,7 @@ const host = `127.0.0.1:${port}`;
 
 describe('API TESTS ', () => {
   //The local server needs to be running for this test to pass
-  it('should return a status code of 200', async () => {
+  it('base url should return a status code of 200', async () => {
     const res = await request(host)
       .get('/')
       .set('content-type', 'application/json');
