@@ -5,6 +5,7 @@ const config = {
   env: process.env.NODE_ENV,
   port: process.env.PORT || process.env.HTTP_PORT,
   project: process.env.PROJECT,
+  allowed_origins: process.env.ALLOWED_ORIGINS,
 };
 
 export default config;
