@@ -58,6 +58,7 @@ app.get('/', (req, res) => {
 });
 
 app.listen(port, async () => {
+  logger.info('connecting to database ...');
   await connectDB();
   logger.info(`server is listening on port ${port}`);
 });
