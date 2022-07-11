@@ -4,9 +4,11 @@ import logger from './src/utils/logger.js';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
+import passport from 'passport';
 import { connectDB } from './src/database/mongoose.js';
 
 import usersRoute from './src/routers/users.router.js';
+import { applyPassportJwtStrategy } from './src/middlewares/passport.js';
 
 const app = express();
 const port = config.port;
@@ -49,6 +51,8 @@ app.use(
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
   })
 );
+
+applyPassportJwtStrategy(passport);
 
 //Base URL
 app.get('/', (req, res) => {

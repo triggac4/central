@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 import config from '../../config/default.js';
-import userModel from '../database/models/users.model.js';
+import User from '../database/models/users.model.js';
 import { userCreateValidation } from '../database/validation/users.validation.js';
 
 import {
@@ -25,7 +25,7 @@ export const createUser = async (req, res) => {
         .json(failureResponse(400, error.details[0].message));
     }
 
-    const userByEmail = await userModel.findOne({ email: email });
+    const userByEmail = await User.findOne({ email: email });
 
     if (userByEmail !== null) {
       console.log(userByEmail);
@@ -34,7 +34,7 @@ export const createUser = async (req, res) => {
         .json(failureResponse(400, 'A user exists with the email provided'));
     }
 
-    const userByUsername = await userModel.findOne({ username: username });
+    const userByUsername = await User.findOne({ username: username });
 
     if (userByUsername !== null) {
       return res
@@ -44,7 +44,7 @@ export const createUser = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(userPassword, 10);
 
-    const newUser = await userModel.create({
+    const newUser = await User.create({
       fullName,
       username,
       email,
@@ -67,9 +67,21 @@ export const createUser = async (req, res) => {
 
     await sendConfirmationEmail({ ...dataToReturn, id: dataToReturn._id });
 
+    const tokenData = {
+      sub: dataToReturn._id,
+      Issuer: jwtIssuer,
+    };
+
+    const token = jwt.sign(tokenData, jwtSecret, { expiresIn: '1h' });
+
+    const response = {
+      token: `Bearer ${token}`,
+      userId: dataToReturn._id,
+    };
+
     return res
       .status(200)
-      .json(successResponse(201, dataToReturn, 'User create successfully'));
+      .json(successResponse(201, response, 'User create successfully'));
   } catch (error) {
     return res.status(500).json(failureResponse(500, error.message));
   }
@@ -90,7 +102,7 @@ export const signinUser = async (req, res) => {
         );
     }
 
-    const userExist = await userModel.findOne({
+    const userExist = await User.findOne({
       $or: [{ email: user }, { username: user.username }],
     });
 
@@ -108,9 +120,7 @@ export const signinUser = async (req, res) => {
     }
 
     const data = {
-      id: userExist._id,
-      email: userExist.email,
-      username: userExist.username,
+      sub: userExist._id,
       issuer: jwtIssuer,
     };
 
