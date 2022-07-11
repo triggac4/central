@@ -1,5 +1,6 @@
 import sgEmail from '@sendgrid/mail';
 import config from '../../config/default.js';
+import { generateConfirmationEmail } from './emailGenerator.js';
 
 const { sendgrid, verifiedSendgridEmail } = config;
 
@@ -23,11 +24,7 @@ const sendEmail = async (emailContent, recipientAddress) => {
 
 export const sendConfirmationEmail = async (recipient) => {
   try {
-    const messageBody = `
-    <div>
-        <h3>Dear ${recipient.fullName}, your account has been created with the user of name ${recipient.username}</h3>
-        <a href="confirmation/${recipient.id}">confirm</a>
-        </div>`;
+    const messageBody = generateConfirmationEmail(recipient);
 
     const emailContent = {
       body: messageBody,

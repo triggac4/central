@@ -8,6 +8,8 @@ const config = {
   allowed_origins: process.env.ALLOWED_ORIGINS,
   sendgrid: process.env.SENGRID_API_KEY,
   verifiedSendgridEmail: process.env.VERIFIED_SENDGRID_EMAIL,
+  jwtSecret: process.env.JWT_SECRET,
+  jwtIssuer: process.env.JWT_ISSUER,
 };
 
 export default config;

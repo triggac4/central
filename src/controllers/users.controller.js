@@ -1,12 +1,17 @@
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
+import config from '../../config/default.js';
 import userModel from '../database/models/users.model.js';
 import { userCreateValidation } from '../database/validation/users.validation.js';
-import bcrypt from 'bcrypt';
 
 import {
   successResponse,
   failureResponse,
   sendConfirmationEmail,
 } from '../helpers/index.js';
+
+const { jwtSecret, jwtIssuer } = config;
 
 export const createUser = async (req, res) => {
   const { fullName, username, password: userPassword, email } = req.body;
@@ -80,7 +85,7 @@ export const signinUser = async (req, res) => {
         .json(
           failureResponse(
             404,
-            'Fields user and password are requird for signin'
+            'Fields user and password are required for signin'
           )
         );
     }
@@ -102,7 +107,21 @@ export const signinUser = async (req, res) => {
       return res.status(400).json(failureResponse(400, 'Incorrect password'));
     }
 
-    return res.status(200).json(successResponse(200, userExist));
+    const data = {
+      id: userExist._id,
+      email: userExist.email,
+      username: userExist.username,
+      issuer: jwtIssuer,
+    };
+
+    const token = jwt.sign(data, jwtSecret, { expiresIn: '1h' });
+
+    const response = {
+      token: `Bearer ${token}`,
+      userId: data.id,
+    };
+
+    return res.status(200).json(successResponse(200, response));
   } catch (err) {
     return res.status(500).json(failureResponse(500, err.message));
   }
