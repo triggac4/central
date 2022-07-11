@@ -24,10 +24,13 @@ const userSchema = new Schema(
       required: true,
       minLength: 6,
     },
-
-    registeredDate: {
-      type: Date,
-      default: Date.now,
+    emailConfirmed: {
+      type: Boolean,
+      default: false,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }
