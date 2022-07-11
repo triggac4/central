@@ -6,6 +6,8 @@ import helmet from 'helmet';
 import cors from 'cors';
 import { connectDB } from './src/database/mongoose.js';
 
+import usersRoute from './src/routers/users.router.js';
+
 const app = express();
 const port = config.port;
 
@@ -62,3 +64,5 @@ app.listen(port, async () => {
   await connectDB();
   logger.info(`server is listening on port ${port}`);
 });
+
+app.use('/accounts', usersRoute);
