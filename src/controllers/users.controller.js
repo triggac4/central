@@ -8,6 +8,7 @@ import {
   successResponse,
   failureResponse,
   sendConfirmationEmail,
+  generateToken,
 } from '../helpers/index.js';
 
 const { jwtSecret, jwtIssuer } = config;
@@ -64,12 +65,7 @@ export const createUser = async (req, res) => {
 
     await sendConfirmationEmail({ ...dataToReturn, id: dataToReturn._id });
 
-    const tokenData = {
-      sub: dataToReturn._id,
-      Issuer: jwtIssuer,
-    };
-
-    const token = jwt.sign(tokenData, jwtSecret, { expiresIn: '1h' });
+    const token = generateToken(dataToReturn);
 
     const response = {
       token: `Bearer ${token}`,
@@ -86,49 +82,22 @@ export const createUser = async (req, res) => {
 
 export const signinUser = async (req, res) => {
   try {
-    const { user, password } = req.body;
+    const { user } = req;
 
-    if (user === undefined || password === undefined) {
-      return res
-        .status(400)
-        .json(
-          failureResponse(
-            404,
-            'Fields user and password are required for signin'
-          )
-        );
+    if (!user) {
+      return res.json(400).json(failureResponse(404, 'User not found'));
     }
+    const token = generateToken(user);
 
-    const userExist = await User.findOne({
-      $or: [{ email: user }, { username: user.username }],
-    });
-
-    if (userExist === null) {
-      return res
-        .status(404)
-        .json(
-          failureResponse(404, 'No user with the user name or email provided')
-        );
-    }
-    const passwordCorrect = await bcrypt.compare(password, userExist.password);
-
-    if (!passwordCorrect) {
-      return res.status(400).json(failureResponse(400, 'Incorrect password'));
-    }
-
-    const data = {
-      sub: userExist._id,
-      issuer: jwtIssuer,
-    };
-
-    const token = jwt.sign(data, jwtSecret, { expiresIn: '1h' });
-
-    const response = {
-      token: `Bearer ${token}`,
-      userId: data.id,
-    };
-
-    return res.status(200).json(successResponse(200, response));
+    return res
+      .status(200)
+      .json(
+        successResponse(
+          201,
+          { token: token, userId: user._id },
+          'Login successful'
+        )
+      );
   } catch (err) {
     return res.status(500).json(failureResponse(500, err.message));
   }

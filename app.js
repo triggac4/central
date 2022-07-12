@@ -8,7 +8,11 @@ import passport from 'passport';
 import { connectDB } from './src/database/mongoose.js';
 
 import usersRoute from './src/routers/users.router.js';
-import { applyPassportJwtStrategy } from './src/middlewares/passport.js';
+import {
+  applyPassportJwtStrategy,
+  applyPassportLocalStrategy,
+} from './src/middlewares/passport.js';
+import { failureResponse } from './src/helpers/apiResponse.js';
 
 const app = express();
 const port = config.port;
@@ -53,6 +57,7 @@ app.use(
 );
 
 applyPassportJwtStrategy(passport);
+applyPassportLocalStrategy(passport);
 
 //Base URL
 app.get('/', (req, res) => {
@@ -70,3 +75,7 @@ app.listen(port, async () => {
 });
 
 app.use('/accounts', usersRoute);
+
+app.all('*', async (req, res) => {
+  return res.status(404).json(failureResponse(404, 'No a valid route'));
+});

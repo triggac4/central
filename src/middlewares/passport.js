@@ -40,12 +40,24 @@ export const applyPassportLocalStrategy = (passport) => {
     new LocalStrategy(
       { usernameField: 'user' },
       async (user, password, done) => {
-        const userExist = await User.findOne({
-          $or: [{ email: user }, { username: user }],
-        });
+        try {
+          const userExist = await User.findOne({
+            $or: [{ email: user }, { username: user }],
+          });
 
-        if (!userExist) {
-          return done(failureResponse(404, 'User not found'), false);
+          if (!userExist) {
+            return done(null, false);
+          }
+
+          const isMatch = await userExist.isValidPassword(password);
+
+          if (!isMatch) {
+            return done(null, false);
+          }
+
+          return done(null, userExist);
+        } catch (error) {
+          done(error, false);
         }
       }
     )
