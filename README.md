@@ -7,7 +7,7 @@ yarn.lock
 # Project Campus
 
 ## set up
-notice the [env.sample:](env.sample) this is to show you the env variable being used.. so if you need to add a new env value please endevour to update the file
+notice the [env.sample:](/env.sample) this is to show you the env variable being used.. so if you need to add a new env value please endevour to update the file
 
 ##Contribution
 detailed steps on contributing
