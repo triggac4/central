@@ -1,5 +1,6 @@
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
+import GooglePlusTokenStrategy from 'passport-google-plus-token';
 import bcrypt from 'bcrypt';
 
 import config from '../../config/default.js';
@@ -8,6 +9,7 @@ import { failureResponse } from '../helpers/index.js';
 
 const { jwtSecret, jwtIssuer } = config;
 
+// JWT STRATEGY
 export const applyPassportJwtStrategy = (passport) => {
   passport.use(
     new JwtStrategy(
@@ -35,6 +37,12 @@ export const applyPassportJwtStrategy = (passport) => {
   );
 };
 
+// GOOGLE OAUTH STRATEGY
+export const applyGoogleOAuthStrategy = (passport) => {
+  passport.use(new GooglePlusTokenStrategy({}));
+};
+
+// LOCAL STRATEGY
 export const applyPassportLocalStrategy = (passport) => {
   passport.use(
     new LocalStrategy(
