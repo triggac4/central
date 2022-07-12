@@ -51,7 +51,7 @@ app.use(
 );
 
 //websocket setup
-const server = socketConnect(app);
+const socket = socketConnect(app);
 
 //Base URL
 app.get('/', (req, res) => {
@@ -62,7 +62,21 @@ app.get('/', (req, res) => {
   });
 });
 
-server.listen(port, async () => {
+//TODO: remove this
+//how to use websocket
+//syntax of sending rtc message to a particular room
+//everybody listening to room-123 will receive the message
+//this way all checks can be done on the controller
+//front-end only listens to rooms
+// app.get("/sendMessage",(req,res)=>{
+//   const IO=req.app.get('IO');
+//   IO.sockets.emit('room-123','message from server');
+//   res.status(200).json({
+//     message: 'message sent'
+//   });
+// });
+
+socket.listen(port, async () => {
   logger.info('connecting to database ...');
   await connectDB();
   logger.info(`server is listening on port ${port}`);

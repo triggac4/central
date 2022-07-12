@@ -10,12 +10,11 @@ const socketConnect = (app) => {
     },
   });
 
-  io.on('connection', (socket) => {
-    app.set('socket', socket);
-    socket.on('disconnect', () => {
-      console.log('user disconnected');
-    });
-  });
+  //incase anything needs to be done on connection
+  io.on('connection', (socket) => {});
+
+  app.set('IO', io);
+
   return server;
 };
 
