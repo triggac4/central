@@ -4,7 +4,9 @@ import logger from './src/utils/logger.js';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
+
 import { connectDB } from './src/database/mongoose.js';
+import socketConnect from './src/utils/socket/socket.js';
 
 const app = express();
 const port = config.port;
@@ -48,6 +50,9 @@ app.use(
   })
 );
 
+//websocket setup
+const server = socketConnect(app);
+
 //Base URL
 app.get('/', (req, res) => {
   res.status(200).json({
@@ -57,7 +62,7 @@ app.get('/', (req, res) => {
   });
 });
 
-app.listen(port, async () => {
+server.listen(port, async () => {
   logger.info('connecting to database ...');
   await connectDB();
   logger.info(`server is listening on port ${port}`);
