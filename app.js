@@ -58,7 +58,6 @@ app.use(
   })
 );
 
-
 applyPassportJwtStrategy(passport);
 applyPassportLocalStrategy(passport);
 
