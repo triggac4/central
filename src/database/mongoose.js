@@ -33,6 +33,10 @@ export const connectDB = (poolSize = 20, autoIndex = true) => {
         process.env.MONGO_HOST
       }/campus_central_staging?retryWrites=true&w=majority`;
       break;
+    case 'testing':
+      dbName = process.env.MONGO_DATABASE;
+      connectionString = process.env.MONGO_TEST_URI;
+      break;
     default:
       dbName = process.env.MONGO_DATABASE;
       mongoose.set('debug', true);
