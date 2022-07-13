@@ -4,9 +4,17 @@ import logger from './src/utils/logger.js';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
+import passport from 'passport';
 
 import { connectDB } from './src/database/mongoose.js';
 import socketConnect from './src/utils/socket/socket.js';
+
+import usersRoute from './src/routers/users.router.js';
+import {
+  applyPassportJwtStrategy,
+  applyPassportLocalStrategy,
+} from './src/middlewares/passport.js';
+import { failureResponse } from './src/helpers/apiResponse.js';
 
 const app = express();
 const port = config.port;
@@ -50,6 +58,10 @@ app.use(
   })
 );
 
+
+applyPassportJwtStrategy(passport);
+applyPassportLocalStrategy(passport);
+
 //websocket setup
 const socket = socketConnect(app);
 
@@ -80,4 +92,10 @@ socket.listen(port, async () => {
   logger.info('connecting to database ...');
   await connectDB();
   logger.info(`server is listening on port ${port}`);
+});
+
+app.use('/accounts', usersRoute);
+
+app.all('*', async (req, res) => {
+  return res.status(404).json(failureResponse(404, 'No a valid route'));
 });
