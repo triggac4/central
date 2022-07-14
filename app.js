@@ -87,14 +87,14 @@ app.get('/', (req, res) => {
 //   });
 // });
 
-socket.listen(port, async () => {
-  logger.info('connecting to database ...');
-  await connectDB();
-  logger.info(`server is listening on port ${port}`);
-});
-
 app.use('/accounts', usersRoute);
 
 app.all('*', async (req, res) => {
   return res.status(404).json(failureResponse(404, 'No a valid route'));
+});
+
+socket.listen(port, async () => {
+  logger.info('connecting to database ...');
+  await connectDB();
+  logger.info(`server is listening on port ${port}`);
 });
