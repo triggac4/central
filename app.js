@@ -5,7 +5,9 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
 import passport from 'passport';
+import 'express-async-errors';
 
+import errorHandler from './src/middlewares/error_handler.js';
 import { connectDB } from './src/database/mongoose.js';
 import socketConnect from './src/utils/socket/socket.js';
 
@@ -15,6 +17,7 @@ import {
   applyPassportLocalStrategy,
 } from './src/middlewares/passport.js';
 import { failureResponse } from './src/helpers/apiResponse.js';
+import unknownRoute from './src/middlewares/unkown_route.js';
 
 const app = express();
 const port = config.port;
@@ -89,9 +92,7 @@ app.get('/', (req, res) => {
 
 app.use('/accounts', usersRoute);
 
-app.all('*', async (req, res) => {
-  return res.status(404).json(failureResponse(404, 'No a valid route'));
-});
+app.use(unknownRoute, errorHandler);
 
 socket.listen(port, async () => {
   logger.info('connecting to database ...');
