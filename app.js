@@ -18,6 +18,7 @@ import {
 } from './src/middlewares/passport.js';
 import { failureResponse } from './src/helpers/apiResponse.js';
 import unknownRoute from './src/middlewares/unkown_route.js';
+import roomRoute from './src/routers/room.router.js';
 
 const app = express();
 const port = config.port;
@@ -91,7 +92,7 @@ app.get('/', (req, res) => {
 // });
 
 app.use('/accounts', usersRoute);
-
+app.use('/rooms', roomRoute);
 app.use(unknownRoute, errorHandler);
 
 socket.listen(port, async () => {
