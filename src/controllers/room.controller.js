@@ -15,7 +15,7 @@ function isValidObjectId(id) {
   return false;
 }
 
-('api/v1/accounts/:userID/rooms');
+('rooms/:userID/rooms');
 const getUserRooms = async (req, res) => {
   const userID = req.params.userID;
   if (!isValidObjectId(userID)) {
@@ -36,6 +36,7 @@ const getUserRooms = async (req, res) => {
   });
 };
 
+('rooms/');
 const createRoom = async (req, res) => {
   const { room_type, room_users } = req.body;
 
@@ -51,12 +52,14 @@ const createRoom = async (req, res) => {
     });
   }
 
+  const roomUserDetails = [];
   const formattedUsers = await Promise.all(
     room_users.map(async (item) => {
       const User = await usersModel.findById(item);
       if (!User) {
         throw new Error('user not found');
       }
+      roomUserDetails.push(User);
       return {
         user_id: item,
         last_time_seen: new Date(),
@@ -67,14 +70,14 @@ const createRoom = async (req, res) => {
   if (room_type) {
     switch (room_type) {
       case 'dm':
-        if (room.users?.length < 2) {
+        if (room_users?.length < 2) {
           return res.status(400).json({
             message: 'room_users must be at least 2',
           });
         }
         break;
       case 'private':
-        if (room.users?.length < 1) {
+        if (room_users?.length < 1) {
           return res.status(400).json({
             message: 'room_users must be at least 1',
           });
@@ -94,7 +97,9 @@ const createRoom = async (req, res) => {
   res.status(200).json({
     message: 'room created successfully',
     room: room,
+    roomUsers: roomUserDetails,
   });
 };
 
-export default { getUserRooms };
+const updateRoomLastSeen = async (req, res) => {};
+export default { getUserRooms, createRoom };

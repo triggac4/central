@@ -9,5 +9,10 @@ router.get(
   passport.authenticate('jwt', { session: false }),
   roomController.getUserRooms
 );
+router.post(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  roomController.createRoom
+);
 
 export default router;
