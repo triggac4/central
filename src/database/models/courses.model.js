@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
 
 const courseSchema = mongoose.Schema({
-  course_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-  },
   course_code: {
     type: String,
     required: true,
