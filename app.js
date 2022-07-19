@@ -10,6 +10,7 @@ import { connectDB } from './src/database/mongoose.js';
 import socketConnect from './src/utils/socket/socket.js';
 
 import usersRoute from './src/routers/users.router.js';
+//import generateTokenRoute from './src/routers/generatetoken.router.js';
 import {
   applyPassportJwtStrategy,
   applyPassportLocalStrategy,
@@ -94,6 +95,7 @@ socket.listen(port, async () => {
 });
 
 app.use('/accounts', usersRoute);
+//app.use('/token', generateTokenRoute);
 
 app.all('*', async (req, res) => {
   return res.status(404).json(failureResponse(404, 'No a valid route'));
