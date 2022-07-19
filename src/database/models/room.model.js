@@ -27,6 +27,11 @@ const roomSchema = mongoose.Schema(
       enum: ['dm', 'private', 'public'],
       required: true,
     },
+    room_admin: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'users',
+      required: true,
+    },
   },
   { timestamps: true }
 );

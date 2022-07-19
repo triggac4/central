@@ -53,6 +53,7 @@ const createRoom = async (req, res) => {
   }
 
   const roomUserDetails = [];
+
   const formattedUsers = await Promise.all(
     room_users.map(async (item) => {
       const User = await usersModel.findById(item);
@@ -66,15 +67,16 @@ const createRoom = async (req, res) => {
       };
     })
   );
-
+  const admin = [];
   if (room_type) {
     switch (room_type) {
       case 'dm':
-        if (room_users?.length < 2) {
+        if (room_users?.length !== 2) {
           return res.status(400).json({
-            message: 'room_users must be at least 2',
+            message: 'room_users of type dm must be 2',
           });
         }
+        admin.push(room_users);
         break;
       case 'private':
         if (room_users?.length < 1) {
@@ -82,11 +84,13 @@ const createRoom = async (req, res) => {
             message: 'room_users must be at least 1',
           });
         }
+        admin.push(req.user._id);
     }
   }
   const room = await roomModel.create({
     room_type,
     room_users: formattedUsers,
+    room_admin: admin,
   });
 
   if (!room) {
