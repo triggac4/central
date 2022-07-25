@@ -63,8 +63,6 @@ export const createUser = async (req, res) => {
     const { password, emailConfirmed, isActive, ...dataToReturn } =
       newUser._doc;
 
-    await sendConfirmationEmail({ ...dataToReturn, id: dataToReturn._id });
-
     const token = generateToken(dataToReturn);
 
     const response = {
