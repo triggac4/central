@@ -16,6 +16,9 @@
     "type": "git",
     "url": "git+https://solomon-prosperity@github.com/kodecampteam/project-campus-central-backend.git"
   },
+  "engines": {
+    "node": "16.x"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

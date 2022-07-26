@@ -15,15 +15,9 @@ function isValidObjectId(id) {
   return false;
 }
 
-('rooms/:userID/rooms');
+('rooms');
 const getUserRooms = async (req, res) => {
-  const userID = req.params.userID;
-  if (!isValidObjectId(userID)) {
-    return res.status(400).json({
-      message: 'valid roomID is required',
-    });
-  }
-  console.log('user', req.user);
+  const userID = req.user;
   const rooms = await roomModel
     .find({ room_users: { $elemMatch: { user_id: userID } } })
     .sort({ room_type: -1 });
