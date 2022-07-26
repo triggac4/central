@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
-import messageModel from '../database/models/message.model';
-import roomModel from '../database/models/room.model';
-import socketEvents from '../utils/socket/socketEvents';
-import asyncWrapper from '../utils/asyncwrapper';
+import messageModel from '../database/models/message.model.js';
+import roomModel from '../database/models/room.model.js';
+import socketEvents from '../utils/socket/socketEvents.js';
+import asyncWrapper from '../utils/asyncwrapper.js';
 
 // TODO: move this to helper folder after merge
 const ObjectId = mongoose.Types.ObjectId;
@@ -103,7 +103,10 @@ const editMessage = async (req, res) => {
   message.content = content;
   message.messageType = messageType;
 
-  if (message.sender_id !== req.user._id) {
+  console.log('sender_id', message.sender_id);
+  console.log('user_id', req.user._id);
+
+  if (`${message.sender_id}` !== `${req.user._id}`) {
     return res.status(400).json({
       message: 'you are not authorized to edit this message',
     });
@@ -121,3 +124,5 @@ const editMessage = async (req, res) => {
     messages: message,
   });
 };
+
+export default { getRoomMessages, sendMessage, editMessage };
