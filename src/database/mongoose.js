@@ -25,6 +25,7 @@ export const connectDB = (poolSize = 20, autoIndex = true) => {
         process.env.MONGO_DATABASE
       )}?retryWrites=true&w=majority`;
       console.log(connectionString);
+
       break;
     case 'staging':
       dbName = process.env.MONGO_DATABASE;
