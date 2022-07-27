@@ -24,7 +24,7 @@ export const connectDB = (poolSize = 20, autoIndex = true) => {
       }/${encodeURIComponent(
         process.env.MONGO_DATABASE
       )}?retryWrites=true&w=majority`;
-      console.log(connectionString);
+      // console.log(connectionString);
 
       break;
     case 'staging':
@@ -35,7 +35,7 @@ export const connectDB = (poolSize = 20, autoIndex = true) => {
         process.env.MONGO_HOST
       }/campus_central_staging?retryWrites=true&w=majority`;
       break;
-      console.log(connectionString);
+    //  console.log(connectionString);
 
     case 'testing':
       dbName = process.env.MONGO_DATABASE;
